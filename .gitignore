@@ -1,0 +1,15 @@
+node_modules/
+dist/
+_site/
+.env
+.env.*
+!.env.example
+*.log
+*.txt
+force-replace-main.ps1
+force-replace-main.sh
+start-client.ps1
+start-client.cmd
+*.md
+# Local generated browser-side DeepSeek config
+# The checked-in placeholder stays, but do not commit a locally generated real-key payload.

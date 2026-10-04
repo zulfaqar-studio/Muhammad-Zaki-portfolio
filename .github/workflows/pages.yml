@@ -1,0 +1,152 @@
+name: Deploy portfolio to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: portfolio-pages-deploy
+  cancel-in-progress: true
+
+env:
+  DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL || secrets.DEEPSEEK_MODEL || 'deepseek-flash' }}
+  DRIVE_CHATBOT_FOLDER_ID: ${{ vars.DRIVE_CHATBOT_FOLDER_ID || secrets.DRIVE_CHATBOT_FOLDER_ID }}
+  DRIVE_MAX_CONTEXT_CHARS: ${{ vars.DRIVE_MAX_CONTEXT_CHARS || secrets.DRIVE_MAX_CONTEXT_CHARS || '30000' }}
+  DRIVE_MEDIA_FOLDER_ID: ${{ vars.DRIVE_MEDIA_FOLDER_ID || secrets.DRIVE_MEDIA_FOLDER_ID }}
+  DRIVE_OVERALL_FOLDER_ID: ${{ vars.DRIVE_OVERALL_FOLDER_ID || secrets.DRIVE_OVERALL_FOLDER_ID }}
+  DRIVE_OVERALL_MANIFEST_NAME: ${{ vars.DRIVE_OVERALL_MANIFEST_NAME || secrets.DRIVE_OVERALL_MANIFEST_NAME || 'drive-media.json' }}
+  GOOGLE_DRIVE_PUBLIC_API_KEY: ${{ vars.GOOGLE_DRIVE_PUBLIC_API_KEY || secrets.GOOGLE_DRIVE_PUBLIC_API_KEY }}
+  GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID: ${{ vars.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID || secrets.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID }}
+  GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID: ${{ vars.GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID || secrets.GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID }}
+  GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL || vars.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+  GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY || vars.GOOGLE_SERVICE_ACCOUNT_KEY }}
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || vars.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+  VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL || secrets.VITE_API_BASE_URL }}
+  VITE_BASE_PATH: /Muhammad-Zaki-portfolio/
+  VITE_PUBLIC_SITE_URL: https://zulfaqar-studio.github.io/Muhammad-Zaki-portfolio/
+  VITE_GOOGLE_DRIVE_PUBLIC_API_KEY: ${{ vars.GOOGLE_DRIVE_PUBLIC_API_KEY || secrets.GOOGLE_DRIVE_PUBLIC_API_KEY }}
+  VITE_GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID: ${{ vars.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID || vars.DRIVE_MEDIA_FOLDER_ID || secrets.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID || secrets.DRIVE_MEDIA_FOLDER_ID }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: global
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate required configuration
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          test -n "$DEEPSEEK_API_KEY" || { echo "DEEPSEEK_API_KEY is missing."; exit 1; }
+          test -n "$DEEPSEEK_MODEL" || { echo "DEEPSEEK_MODEL is missing."; exit 1; }
+          test -n "$DRIVE_CHATBOT_FOLDER_ID" || { echo "DRIVE_CHATBOT_FOLDER_ID is missing."; exit 1; }
+          test -n "$DRIVE_MEDIA_FOLDER_ID" || { echo "DRIVE_MEDIA_FOLDER_ID is missing."; exit 1; }
+          test -n "$GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL" || { echo "GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL is missing."; exit 1; }
+          test -n "$GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY" || { echo "GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY is missing."; exit 1; }
+
+      - name: Generate static repository media manifest
+        run: node scripts/generate-static-media-manifest.mjs
+
+      - name: Check chatbot Drive source fingerprint
+        id: drive_fingerprint
+        run: node scripts/get-drive-fingerprint.mjs
+        env:
+          DEEPSEEK_SOURCE_DRIVE_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+
+      - name: Restore DeepSeek knowledge cache
+        id: deepseek_cache
+        uses: actions/cache@v4
+        with:
+          path: client/public/data/deepseek.json
+          key: deepseek-data-v3-${{ steps.drive_fingerprint.outputs.hash }}
+
+      - name: Generate chatbot knowledge from Google Drive
+        if: steps.deepseek_cache.outputs.cache-hit != 'true'
+        run: node scripts/generate-deepseek-data.mjs
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: ${{ env.DEEPSEEK_MODEL }}
+          DEEPSEEK_SOURCE_DRIVE_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          DRIVE_CHATBOT_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          DRIVE_MAX_CONTEXT_CHARS: ${{ env.DRIVE_MAX_CONTEXT_CHARS }}
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          DEEPSEEK_DRIVE_MAX_FILES: '120'
+          DEEPSEEK_DRIVE_MAX_DEPTH: '5'
+          DEEPSEEK_KNOWLEDGE_MAX_TOKENS: '12000'
+          DEEPSEEK_SOURCE_FINGERPRINT: ${{ steps.drive_fingerprint.outputs.hash }}
+
+      - name: Generate public Google Drive media manifest
+        run: node scripts/generate-drive-media-manifest.mjs
+        env:
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID: ${{ env.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID || env.DRIVE_MEDIA_FOLDER_ID }}
+          GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID: ${{ env.GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID }}
+          PUBLIC_DRIVE_MAX_FILES: '500'
+          PUBLIC_DRIVE_MAX_DEPTH: '6'
+
+      - name: Generate browser DeepSeek configuration
+        run: node scripts/generate-deepseek-config-secret.mjs
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: ${{ env.DEEPSEEK_MODEL }}
+
+      - name: Verify browser DeepSeek configuration
+        run: node scripts/verify-deepseek-config.mjs
+
+      - name: Build public client
+        run: npm run build:client
+        env:
+          NODE_ENV: production
+          VITE_API_BASE_URL: ${{ env.VITE_API_BASE_URL }}
+          VITE_BASE_PATH: ${{ env.VITE_BASE_PATH }}
+          VITE_PUBLIC_SITE_URL: ${{ env.VITE_PUBLIC_SITE_URL }}
+          VITE_GOOGLE_DRIVE_PUBLIC_API_KEY: ${{ env.VITE_GOOGLE_DRIVE_PUBLIC_API_KEY }}
+          VITE_GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID: ${{ env.VITE_GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID }}
+
+      - name: Prepare Pages site
+        run: |
+          rm -rf _site
+          mkdir -p _site
+          cp -R client/dist/. _site/
+          touch _site/.nojekyll
+          cp _site/index.html _site/404.html
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

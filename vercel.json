@@ -2,10 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/chat.js": {
-      "includeFiles": [
-        "client/public/data/portfolio.json",
-        "client/public/data/deepseek.json"
-      ]
+      "includeFiles": "client/public/data/**"
     }
   }
 }

@@ -1,0 +1,341 @@
+{
+  "profile": {
+    "name": "MUHAMMAD ZAKI",
+    "role": "Rapid Transit Technology & Mechanical Servicing",
+    "location": "Singapore",
+    "heroTitle": "Built for practical work.",
+    "heroEmphasis": "Focused on safe, reliable operations.",
+    "heroTraits": [
+      "Mechanical maintenance",
+      "Rapid transit technology",
+      "Equipment inspection",
+      "Safety",
+      "Practical problem-solving"
+    ],
+    "intro": "Technically trained candidate with an ITEC in Rapid Transit Technology and practical training in Mechanical Servicing, with a strong interest in mechanical maintenance and technical operations at SMRT.",
+    "summary": "Technically trained candidate with an ITEC in Rapid Transit Technology and practical training in Mechanical Servicing, with a strong interest in mechanical maintenance and technical operations at SMRT. Brings internship exposure to mechanical and electrical (M&E) services, including equipment inspection and maintenance, BIM model familiarity, technical workflows, commissioning, and testing activities. Strong foundational skills in mechanical servicing, hand tools, workshop practices, basic troubleshooting, equipment inspection, and workplace safety. Demonstrates a methodical, procedure-focused approach with practical problem-solving, attention to detail, and readiness to support safe and reliable rail operations.",
+    "portraitUrl": "profile/potrait.jpeg",
+    "resumeUrl": "https://bit.ly/MZAKI-resume",
+    "contacts": {
+      "phone": "tel:+6583288405",
+      "email": "mailto:zakipendeq@gmail.com"
+    },
+    "contactLinks": [
+      {
+        "id": "contact-phone",
+        "kind": "phone",
+        "label": "Phone",
+        "description": "+65 8328 8405",
+        "url": "tel:+6583288405"
+      },
+      {
+        "id": "contact-email",
+        "kind": "email",
+        "label": "Email",
+        "description": "zakipendeq@gmail.com",
+        "url": "mailto:zakipendeq@gmail.com"
+      }
+    ],
+    "achievements": [
+      {
+        "id": "ignite-challenge",
+        "category": "Challenge",
+        "title": "Ignite Challenge 2020/2021",
+        "year": "2020/2021",
+        "description": "Participation in the Ignite Challenge during secondary school."
+      },
+      {
+        "id": "dance-club",
+        "category": "School activity",
+        "title": "Dance Club — Crest Secondary School",
+        "year": "2018–2021",
+        "description": "Participated in a structured school activity requiring teamwork, coordination and commitment."
+      },
+      {
+        "id": "rapid-transit",
+        "category": "Technical qualification",
+        "title": "ITEC in Rapid Transit Technology",
+        "year": "2022–2024",
+        "description": "Technical training covering rapid transit technology with exposure to mechanical and electrical services, inspection, maintenance, commissioning and testing."
+      },
+      {
+        "id": "mechanical-servicing",
+        "category": "Technical qualification",
+        "title": "ITE Skill Subject (ISC) in Mechanical Servicing",
+        "year": "Completed",
+        "description": "Practical training in mechanical servicing, hand tools, workshop practices, equipment inspection, basic maintenance and troubleshooting."
+      }
+    ]
+  },
+  "resume": {
+    "summary": "Technically trained candidate with an ITEC in Rapid Transit Technology and practical training in Mechanical Servicing, with a strong interest in mechanical maintenance and technical operations at SMRT. Brings internship exposure to mechanical and electrical (M&E) services, including equipment inspection and maintenance, BIM model familiarity, technical workflows, commissioning, and testing activities. Strong foundational skills in mechanical servicing, hand tools, workshop practices, basic troubleshooting, equipment inspection, and workplace safety. Demonstrates a methodical, procedure-focused approach with practical problem-solving, attention to detail, and readiness to support safe and reliable rail operations.",
+    "coreSkills": {
+      "technical": [
+        "Rapid transit technology",
+        "M&E service exposure",
+        "Inspection and maintenance activities",
+        "Commissioning and testing exposure",
+        "BIM model familiarity",
+        "Mechanical servicing",
+        "Equipment inspection",
+        "Basic maintenance",
+        "Basic troubleshooting",
+        "Hand tools",
+        "Workshop practices"
+      ],
+      "warehouse": [
+        "Forklift operation",
+        "Loading and unloading",
+        "Packing and shipment preparation",
+        "Inventory receiving",
+        "Storage and control"
+      ],
+      "workplace": [
+        "Workplace safety",
+        "Procedure-focused work",
+        "Attention to detail",
+        "Practical problem-solving",
+        "Adaptability",
+        "Responsibility",
+        "Teamwork",
+        "Problem-solving"
+      ]
+    },
+    "education": [
+      {
+        "institution": "Institute Of Technical Education",
+        "programme": "Rapid Transit Technology",
+        "period": "10/1/2022 – 09/10/2024",
+        "cca": "[CCA / role]",
+        "achievements": []
+      },
+      {
+        "institution": "Crest Secondary School",
+        "programme": "GCE N(T)",
+        "period": "2018 – 2021",
+        "cca": "Dance Club",
+        "achievements": [
+          "ITE Skill Subject in Mechanical Servicing"
+        ]
+      }
+    ],
+    "certificationsHonoursActivities": [
+      "Fork lift OT license",
+      "Car license (indonesia)",
+      "Motorcycle license (indonesia)",
+      "ignite Challenge 2020/2021",
+      "GCE N(T) level",
+      "ITE Skill Subject (ISC in Mechanical Servicing)",
+      "ITEC in Rapid Transit Technology"
+    ],
+    "languages": [
+      {
+        "language": "English",
+        "proficiency": "professionally working proficiency"
+      },
+      {
+        "language": "Malay",
+        "proficiency": "bilingual and native proficiency"
+      }
+    ]
+  },
+  "certifications": [
+    {
+      "title": "Fork lift OT license",
+      "issuer": "",
+      "year": "",
+      "code": "OT",
+      "image": "certs/Fork lift lincese.jpeg"
+    },
+    {
+      "title": "Car license (indonesia)",
+      "issuer": "",
+      "year": "",
+      "code": "SIM",
+      "image": "certs/Car license.jpg"
+    },
+    {
+      "title": "Motorcycle license (indonesia)",
+      "issuer": "",
+      "year": "",
+      "code": "SIM",
+      "image": "certs/motorcycle license.jpg"
+    },
+    {
+      "title": "ignite Challenge 2020/2021",
+      "issuer": "",
+      "year": "2020/2021",
+      "code": "ACT",
+      "image": ""
+    },
+    {
+      "title": "GCE N(T) level",
+      "issuer": "",
+      "year": "",
+      "code": "EDU",
+      "image": ""
+    },
+    {
+      "title": "ITE Skill Subject (ISC in Mechanical Servicing)",
+      "issuer": "Institute Of Technical Education",
+      "year": "",
+      "code": "ISC",
+      "image": "certs/Crest Secondary ISC.jpg"
+    },
+    {
+      "title": "ITEC in Rapid Transit Technology",
+      "issuer": "Institute Of Technical Education",
+      "year": "",
+      "code": "ITEC",
+      "image": "certs/ITEC rapid transit technology completion.jpg"
+    }
+  ],
+  "workExperience": [
+    {
+      "id": "smrt-internship",
+      "type": "internship",
+      "role": "Internship — Mechanical & Electrical Services",
+      "company": "SMRT Corp",
+      "location": "Singapore",
+      "duration": "Sep 2023 – Nov 2023",
+      "bullets": [
+        "Gained practical skills and industry experience in mechanical and electrical services.",
+        "Supported equipment inspection, maintenance and BIM model-related technical workflows.",
+        "Contributed to commissioning and testing activities while resolving technical issues."
+      ],
+      "summary": "This 3 months internship would focus on gaining practical skills and industry experience in mechanical and electrical services.",
+      "details": [
+        "This could involve tasks like inspecting and maintaining M&E systems, working with BIM models, resolving technical issues, and contributing to the commissioning and testing of M&E services."
+      ],
+      "media": [
+        {
+          "type": "image",
+          "src": "certs/SMRT Intership completion cert.jpg",
+          "title": "SMRT internship completion certificate"
+        }
+      ]
+    },
+    {
+      "id": "nippon-warehouse",
+      "type": "fulltime",
+      "role": "Warehouse Operator",
+      "company": "NIPPON Express",
+      "location": "Singapore",
+      "duration": "Jun 2024 – Apr 2025",
+      "bullets": [
+        "Prepared goods for shipment through packing, labeling and securing items.",
+        "Received, stored and controlled inventory while maintaining accurate records.",
+        "Loaded and unloaded goods and operated forklifts within the warehouse."
+      ],
+      "summary": "Warehouse operations experience covering shipment preparation, inventory management, loading and unloading, forklift operation, and customer service.",
+      "details": [
+        "Packing and shipping: Preparing goods for shipment, including packaging, labeling, and securing items.",
+        "Inventory management: Maintaining accurate inventory records, receiving and storing goods, and ensuring proper storage conditions.",
+        "Loading and unloading: Assisting with the loading and unloading of goods from trucks and other vehicles.",
+        "Forklift operation: Operating forklifts to move goods within the warehouse.",
+        "Customer service: Providing assistance to customers and suppliers, answering inquiries, and resolving issues."
+      ],
+      "media": [
+        {
+          "type": "image",
+          "src": "certs/Nippon Express working attribute slip.jpg",
+          "title": "NIPPON Express work document"
+        },
+        {
+          "type": "image",
+          "src": "certs/Fork lift lincese.jpeg",
+          "title": "Fork lift OT license"
+        }
+      ]
+    },
+    {
+      "id": "guardian-retail",
+      "type": "parttime",
+      "role": "Retail Assistant",
+      "company": "Guardian Health & Beauty",
+      "location": "Singapore",
+      "duration": "Nov 2021 – Jan 2024",
+      "bullets": [
+        "Provided customer service and assisted customers with product purchases.",
+        "Processed sales transactions, returns, refunds and promotional activities.",
+        "Managed stock replenishment, store operations and administrative duties."
+      ],
+      "summary": "Part-time retail experience covering customer service, sales transactions, inventory management, store operations, and administrative duties.",
+      "details": [
+        "Customer Service: Providing excellent customer service, answering questions about products, and assisting with purchases.",
+        "Sales and Transactions: Processing sales transactions, handling returns and refunds, and promoting sales.",
+        "Inventory Management: Maintaining and monitoring stock levels, replenishing shelves, and ensuring accurate inventory.",
+        "Store Operations: Assisting with housekeeping, merchandising, stock ordering, and maintaining a clean and organized sales floor.",
+        "Administrative Duties: Helping with cashiering, administrative tasks, and other adhoc duties as assigned."
+      ],
+      "media": []
+    }
+  ],
+  "projects": [
+    {
+      "title": "SMRT Corp — M&E Services Internship",
+      "type": "Experience Highlight",
+      "status": "Completed",
+      "description": "Internship exposure to mechanical and electrical services, including equipment inspection and maintenance, BIM model familiarity, technical workflows, commissioning, and testing activities.",
+      "tags": [
+        "Rapid transit technology",
+        "M&E",
+        "Maintenance",
+        "Inspection",
+        "Commissioning",
+        "Testing"
+      ]
+    },
+    {
+      "title": "NIPPON Express — Warehouse Operations",
+      "type": "Experience Highlight",
+      "status": "Completed",
+      "description": "Practical warehouse experience covering packing and shipment preparation, inventory receiving and storage, loading and unloading, forklift operation, and customer service.",
+      "tags": [
+        "Warehouse Operations",
+        "Forklift",
+        "Inventory",
+        "Shipment Preparation",
+        "Safety"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "title": "Mechanical & Maintenance",
+      "eyebrow": "INSPECT → MAINTAIN → VERIFY",
+      "description": "Apply foundational mechanical servicing, equipment inspection and basic maintenance practices.",
+      "detail": "Built through technical training and practical exposure in mechanical and electrical services."
+    },
+    {
+      "title": "Troubleshooting",
+      "eyebrow": "OBSERVE → ISOLATE → CHECK",
+      "description": "Use basic troubleshooting and practical problem-solving to understand and respond to technical issues.",
+      "detail": "A procedure-focused approach supports careful checks before action."
+    },
+    {
+      "title": "Workplace Safety",
+      "eyebrow": "CHECK → FOLLOW → PROTECT",
+      "description": "Follow workplace safety practices and established procedures while carrying out technical and operational tasks.",
+      "detail": "Safety is a core part of reliable maintenance and operations."
+    },
+    {
+      "title": "Technical Workflows",
+      "eyebrow": "LEARN → APPLY → DOCUMENT",
+      "description": "Work with technical workflows, BIM model familiarity, commissioning and testing exposure.",
+      "detail": "Training and internship exposure provide a foundation for continued learning in technical environments."
+    },
+    {
+      "title": "Warehouse Operations",
+      "eyebrow": "RECEIVE → STORE → DISPATCH",
+      "description": "Handle inventory receiving, storage and control, shipment preparation, loading and unloading.",
+      "detail": "Practical warehouse experience also includes licensed forklift operation."
+    },
+    {
+      "title": "Teamwork & Responsibility",
+      "eyebrow": "COMMUNICATE → SUPPORT → COMPLETE",
+      "description": "Work responsibly with others, with attention to detail and a practical problem-solving mindset.",
+      "detail": "Adaptability and responsibility support consistent day-to-day work."
+    }
+  ]
+}

@@ -1,0 +1,843 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap");
+
+/* ============================================================================
+ * THEME — this is the whole color palette. Change these 9 values to reskin
+ * the entire site; every rule below reads colors from here via var(--name).
+ *   --bg / --bg-2      page background (2 shades, used for a subtle gradient)
+ *   --panel / --panel-2 card/panel backgrounds
+ *   --line             borders/dividers
+ *   --muted            secondary/de-emphasized text
+ *   --text             primary text color
+ *   --orange / --yellow accent colors (buttons, highlights, active states)
+ *   --soft              a slightly muted off-white, used sparingly
+ * ============================================================================ */
+:root{
+  --bg:#111214;
+  --bg-2:#17191d;
+  --panel:#1b1e23;
+  --panel-2:#20242a;
+  --line:#30353d;
+  --muted:#9ca3ad;
+  --text:#f2f1ed;
+  --orange:#f29a2e;
+  --yellow:#ffd54a;
+  --soft:#c8c5bd;
+  font-family:Inter,system-ui,sans-serif;
+  color:var(--text);
+  background:var(--bg);
+  font-synthesis:none;
+  text-rendering:optimizeLegibility;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:linear-gradient(#111214 0 55%,#0f1012 100%);overflow-x:hidden}
+body:before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;opacity:.09;z-index:-1;
+  background-image:radial-gradient(#fff .6px,transparent .6px);background-size:18px 18px
+}
+a,button,input{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+/* Keyboard accessibility: a visible outline whenever an element is reached
+ * via Tab (but NOT on a plain mouse click, so it doesn't clutter the look
+ * for mouse/touch users). Remove this block only if you're adding your own
+ * focus styling elsewhere — don't delete it outright. */
+a:focus-visible,button:focus-visible,input:focus-visible{
+  outline:2px solid var(--yellow);outline-offset:2px;border-radius:3px
+}
+
+/* "Skip to content" link used in App.jsx — invisible until it receives
+ * keyboard focus (Tab from the very top of the page), then jumps above the
+ * nav bar so keyboard/screen-reader users don't have to tab through the
+ * whole nav every time. */
+.skip-link{
+  position:absolute;left:12px;top:-48px;z-index:100;padding:10px 14px;
+  background:var(--yellow);color:#151515;border-radius:4px;font:600 12px "DM Mono",monospace;
+  transition:top .15s ease-out
+}
+.skip-link:focus{top:12px}
+
+.site-shell{min-height:100vh}
+.section{max-width:1240px;margin:auto;padding:108px 28px 42px;scroll-margin-top:74px}
+
+/* ============================= NAV BAR ============================= */
+.nav-shell{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:24px;
+  padding:13px 28px;background:rgba(17,18,20,.9);border-bottom:1px solid #252930;
+  backdrop-filter:blur(12px)
+}
+.wordmark{display:flex;align-items:center;gap:11px;font:600 12px "DM Mono",monospace;letter-spacing:.06em;white-space:nowrap}
+.wordmark-box{display:grid;place-items:center;width:30px;height:30px;background:var(--orange);color:#111;border-radius:4px;font-weight:700}
+.nav{display:flex;gap:4px;margin:auto}
+.nav button{
+  border:0;background:none;color:#858c96;padding:9px 12px;text-transform:capitalize;border-radius:4px
+}
+.nav button:hover,.nav button.active{color:#fff;background:#1e2228}
+.resume-mini{border:1px solid #363c44;border-radius:4px;padding:8px 11px;font:11px "DM Mono";color:#d3d0c8}
+.mobile-menu{display:none;border:0;background:none;color:#eee;margin-left:auto}
+.overline{font:500 10px "DM Mono",monospace;letter-spacing:.14em;color:#808792;margin:0 0 12px}
+
+/* ============================= HERO ============================= */
+.hero{min-height:calc(100vh - 59px);display:grid;grid-template-columns:1fr .9fr;grid-template-rows:1fr auto;align-items:center;gap:0 35px;padding-top:65px}
+.hero-copy{position:relative;z-index:5}
+.hero h1,.section h2{
+  font-family:"Barlow Condensed",Impact,sans-serif;text-transform:uppercase;
+  font-weight:700;letter-spacing:.015em
+}
+.hero h1{font-size:clamp(54px,8vw,104px);line-height:.86;margin:0 0 22px;max-width:800px}
+.hero h1 em{font-style:normal;color:#969da7}
+.hero-intro{max-width:620px;color:#b9bec6;font-size:18px;line-height:1.7;margin:0}
+.hero-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;color:#8a919c;font:10px "DM Mono";letter-spacing:.08em;text-transform:uppercase}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.action-main,.action-ghost{
+  display:inline-flex;align-items:center;gap:9px;padding:12px 15px;border-radius:4px
+}
+.action-main{border:1px solid var(--yellow);background:var(--yellow);color:#161616;font-weight:700}
+.action-ghost{border:1px solid #3a4048;color:#d8d5cd;background:#1a1d22}
+.a4-chip{display:grid;place-items:center;width:25px;height:30px;background:#f7f4ec;color:#222;font:700 8px "DM Mono"}
+.portrait-stage{position:relative;min-height:610px;isolation:isolate}
+.grid-floor{
+  position:absolute;inset:12% 0 0;background:
+  linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px),
+  linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:48px 48px;
+  transform:perspective(650px) rotateX(58deg) translateY(20%);
+  transform-origin:center bottom;mask-image:linear-gradient(to bottom,#000 20%,transparent 82%)
+}
+.portrait-placeholder{
+  position:absolute;left:18%;top:11%;width:64%;height:74%;z-index:4;
+  border:1px solid #41464e;border-radius:12px;overflow:hidden;
+  background:linear-gradient(145deg,#25292f,#17191e);
+  box-shadow:0 35px 80px rgba(0,0,0,.42);
+  transition:transform .18s ease-out
+}
+.portrait-image{
+  width:100%;height:100%;object-fit:cover;display:block
+}
+/* Wraps the portrait box + the static "mindset" chip beneath it (see
+ * App.jsx's portrait-column). This single wrapper is what actually
+ * occupies the hero's second grid column now — the portrait itself stays
+ * an independent floating/parallax box, and the chip below it is a plain,
+ * static, non-floating element, not part of that parallax system. */
+.portrait-column{display:flex;flex-direction:column;gap:14px}
+.mindset-chip{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:14px 18px;background:#1c2025;border:1px solid #3a4048;border-radius:5px
+}
+.mindset-chip span{font:9px "DM Mono";color:#757d88;letter-spacing:.1em}
+.mindset-chip b{font:600 11px "DM Mono";color:#e9e7df}
+.hero-ribbon{
+  grid-column:1/-1;display:grid;grid-template-columns:150px 1fr;gap:25px;
+  align-items:center;border-top:1px solid #2a2f36;padding-top:17px;margin-top:15px
+}
+.hero-ribbon>span{font:10px "DM Mono";color:#727985}
+.hero-ribbon>div{display:flex;gap:12px;overflow:auto;scrollbar-width:none}
+.hero-ribbon b{
+  flex:0 0 auto;padding:8px 10px;border:1px solid #31363e;border-radius:3px;
+  font:500 10px "DM Mono";color:#afb4bd
+}
+.section-heading{display:flex;justify-content:space-between;gap:40px;align-items:end;border-bottom:1px solid #292e35;padding-bottom:18px;margin-bottom:22px}
+.section h2{font-size:clamp(38px,5vw,68px);line-height:.9;margin:0}
+.section-heading>p{max-width:330px;margin:0;color:#818793;font-size:12px;line-height:1.6}
+
+/* ========================= CERTIFICATIONS ========================= */
+/* Single horizontal rail holding every certification (see App.jsx) — no
+ * more separate "top 5 grid" + "extra rail" split, just one scrollable row.
+ * `.cert-rail-wrap` holds the two arrow buttons + the scrolling rail itself. */
+.cert-rail-wrap{display:flex;align-items:center;gap:10px}
+.cert-rail{
+  display:flex;gap:9px;overflow-x:auto;scroll-snap-type:x proximity;
+  scroll-behavior:smooth;scrollbar-width:thin;padding:10px 2px 14px;flex:1;min-width:0
+}
+/* Thin, unobtrusive scrollbar in Chrome/Safari/Edge (Firefox uses the
+ * scrollbar-width:thin above instead — it doesn't support ::-webkit-*). */
+.cert-rail::-webkit-scrollbar{height:6px}
+.cert-rail::-webkit-scrollbar-thumb{background:#3a4048;border-radius:3px}
+.cert-rail::-webkit-scrollbar-track{background:transparent}
+.cert-rail:focus-visible{outline:2px solid var(--yellow);outline-offset:4px;border-radius:6px}
+.cert-card{
+  flex:0 0 auto;min-width:230px;min-height:190px;padding:16px;border:1px solid #30353d;border-radius:4px;background:#191c21;
+  display:flex;flex-direction:column;justify-content:space-between;transition:transform .2s,border-color .2s;
+  scroll-snap-align:start;
+  /* .cert-card is now a <button> (was a plain <div>) so it's clickable and
+   * keyboard-focusable — these reset the browser's default button styling
+   * back to how the div used to look. */
+  appearance:none;cursor:pointer;text-align:left;font:inherit;color:inherit
+}
+.cert-card:hover{transform:translateY(-4px);border-color:#555d68}
+.cert-card:focus-visible{outline:2px solid var(--yellow);outline-offset:3px}
+.cert-number{
+  width:39px;height:39px;display:grid;place-items:center;border:1px dashed #59606b;
+  color:#b1b6bf;font:10px "DM Mono"
+}
+.cert-card h3{font-size:16px;line-height:1.2;margin:0}
+.cert-card p{margin:7px 0 0;color:#777f8b;font-size:11px}
+/* Round prev/next buttons either side of the rail. Clicking calls
+ * scrollCerts(-1|1) in App.jsx, which scrolls the rail by ~80% of its
+ * own width. Purely a convenience — dragging/swiping/scrolling the rail
+ * directly always works too. */
+.cert-arrow{
+  flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid #3a4048;
+  background:#191c21;color:#d8d5cd;font-size:16px;line-height:1;display:grid;place-items:center;
+  transition:border-color .2s,background .2s
+}
+.cert-arrow:hover{border-color:var(--yellow);background:#20242a}
+
+/* ===================== CERTIFICATION POPUP (CertModal) ===================== */
+/* Full-screen dim backdrop; clicking it (but not the card inside) closes
+ * the popup — see onClick/stopPropagation in App.jsx's CertModal. */
+.cert-modal-overlay{
+  position:fixed;inset:0;background:rgba(10,11,13,.78);backdrop-filter:blur(3px);
+  display:grid;place-items:center;z-index:80;padding:24px;animation:cert-fade .15s ease-out
+}
+.cert-modal{
+  width:min(480px,100%);max-height:85vh;overflow:auto;background:var(--panel);
+  border:1px solid var(--line);border-radius:6px;padding:20px;position:relative;
+  display:flex;flex-direction:column;gap:16px;animation:cert-pop .18s ease-out
+}
+.cert-modal-close{
+  position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--line);background:#191c21;color:var(--text);font-size:14px;
+  display:grid;place-items:center;transition:border-color .2s,background .2s
+}
+.cert-modal-close:hover{border-color:var(--yellow);background:#20242a}
+/* Holds either the real <img> (the official cert/media) or the placeholder
+ * below, whichever CertModal decides to render. */
+.cert-modal-media{
+  width:100%;min-height:220px;border:1px dashed #3a4048;border-radius:4px;
+  overflow:hidden;background:#15171b;display:grid;place-items:center
+}
+.cert-modal-media img{width:100%;max-height:60vh;object-fit:contain;display:block}
+.cert-modal-placeholder{
+  display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;
+  padding:28px 18px;color:#8f96a0
+}
+.cert-modal-placeholder span{font:12px "DM Mono";color:#b1b6bf}
+.cert-modal-placeholder small{font-size:11px;line-height:1.5;max-width:34ch}
+.cert-modal-placeholder code{color:var(--yellow);font:11px "DM Mono"}
+.cert-modal-info{display:flex;gap:12px;align-items:flex-start}
+.cert-modal-info h3{margin:0 0 4px;font-size:18px;line-height:1.25}
+.cert-modal-info p{margin:0;color:#777f8b;font-size:12px}
+
+@keyframes cert-fade{from{opacity:0}to{opacity:1}}
+@keyframes cert-pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+
+/* ========================= WORK EXPERIENCE ========================= */
+/* Full-width horizontal cards. The layout intentionally stays split into
+ * three zones: 12% colored type rail / ~68% work details / ~20% metadata.
+ * `--work-accent` is supplied by WorkCard from the work type. */
+:root{
+  --work-internship:#9b7cf6;
+  --work-parttime:#f29a2e;
+  --work-fulltime:#4da3ff;
+}
+
+.work-section{padding-bottom:76px}
+.work-list{display:grid;gap:10px}
+.work-card{
+  --work-accent:#4da3ff;
+  width:100%;
+  min-height:178px;
+  display:grid;
+  grid-template-columns:minmax(90px,12%) minmax(0,1fr) minmax(145px,20%);
+  padding:0;
+  appearance:none;
+  text-align:left;
+  font:inherit;
+  color:inherit;
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--work-accent) 12%, #171a1f) 0 12%,
+      #181b20 12% 100%);
+  border:1px solid #30353d;
+  border-radius:6px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease
+}
+.work-card:hover{
+  transform:translateY(-3px);
+  border-color:#4c535d;
+  box-shadow:0 15px 45px rgba(0,0,0,.2)
+}
+.work-card:focus-visible{
+  outline:2px solid var(--work-accent);
+  outline-offset:3px
+}
+
+.work-icon-wrap{
+  position:relative;
+  display:grid;
+  place-items:center;
+  min-height:100%;
+  border-right:1px solid color-mix(in srgb, var(--work-accent) 35%, #30353d);
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--work-accent) 16%, transparent),
+    color-mix(in srgb, var(--work-accent) 4%, transparent));
+}
+.work-icon-wrap:after{
+  content:"";
+  position:absolute;
+  width:64px;
+  height:64px;
+  border:1px solid color-mix(in srgb, var(--work-accent) 36%, transparent);
+  border-radius:50%;
+  box-shadow:0 0 0 14px color-mix(in srgb, var(--work-accent) 5%, transparent);
+}
+.work-icon{
+  position:relative;
+  z-index:1;
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  border:1px solid color-mix(in srgb, var(--work-accent) 65%, #30353d);
+  background:color-mix(in srgb, var(--work-accent) 16%, #121418);
+  color:var(--work-accent);
+  font-size:21px;
+  box-shadow:0 0 30px color-mix(in srgb, var(--work-accent) 16%, transparent)
+}
+
+.work-copy{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:22px 24px
+}
+.work-head h3{
+  margin:0;
+  font-size:22px;
+  line-height:1.12;
+  font-weight:600;
+  letter-spacing:-.01em
+}
+.work-head p{
+  margin:7px 0 0;
+  color:#7e8691;
+  font:10px "DM Mono",monospace;
+  letter-spacing:.03em
+}
+.work-bullets{
+  display:grid;
+  gap:6px;
+  margin:18px 0 0;
+  padding:0;
+  list-style:none
+}
+.work-bullets li{
+  position:relative;
+  padding-left:15px;
+  color:#abb1b9;
+  font-size:12px;
+  line-height:1.48
+}
+.work-bullets li:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.55em;
+  width:5px;
+  height:5px;
+  border-radius:1px;
+  background:var(--work-accent);
+  box-shadow:0 0 10px color-mix(in srgb, var(--work-accent) 35%, transparent)
+}
+
+.work-side{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  justify-content:center;
+  gap:10px;
+  padding:22px 22px 22px 14px;
+  border-left:1px solid #2c3138;
+  text-align:right
+}
+.work-chip{
+  display:inline-flex;
+  align-items:center;
+  min-height:26px;
+  padding:5px 8px;
+  border:1px solid color-mix(in srgb, var(--work-accent) 48%, #3a4048);
+  border-radius:999px;
+  background:color-mix(in srgb, var(--work-accent) 9%, #171a1f);
+  color:var(--work-accent);
+  font:500 9px "DM Mono",monospace;
+  letter-spacing:.05em;
+  text-transform:uppercase
+}
+.work-chip-internship{--work-accent:var(--work-internship)}
+.work-chip-parttime{--work-accent:var(--work-parttime)}
+.work-chip-fulltime{--work-accent:var(--work-fulltime)}
+.work-duration{
+  color:#e0ddd5;
+  font:500 11px "DM Mono",monospace;
+  letter-spacing:.02em
+}
+.work-open-hint{
+  color:#656d78;
+  font:9px "DM Mono",monospace;
+  text-transform:uppercase;
+  letter-spacing:.1em
+}
+.work-card:hover .work-open-hint{color:#aeb4bc}
+.work-empty{
+  border:1px dashed #3a4048;
+  border-radius:6px;
+  padding:28px;
+  color:#8b929d;
+  text-align:center
+}
+.work-empty p{margin:0 0 6px}
+.work-empty small{font-size:11px}
+.work-empty code{font-family:"DM Mono",monospace;color:var(--yellow)}
+
+/* ========================= WORK EXPERIENCE POPUP ========================= */
+/* The backdrop owns the close behavior: clicking outside `.work-modal`
+ * reaches `onClose`, while the card itself stops propagation in App.jsx.
+ * The page behind the popup is locked while the popup is open. */
+.work-modal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:90;
+  display:grid;
+  place-items:center;
+  padding:22px;
+  background:rgba(8,9,11,.82);
+  backdrop-filter:blur(7px);
+  animation:work-fade .16s ease-out
+}
+.work-modal{
+  --work-accent:#4da3ff;
+  width:min(980px,100%);
+  max-height:min(88vh,920px);
+  overflow:auto;
+  background:
+    linear-gradient(135deg,color-mix(in srgb, var(--work-accent) 8%, transparent),transparent 28%),
+    #15181c;
+  border:1px solid #3a4048;
+  border-radius:8px;
+  position:relative;
+  box-shadow:0 30px 110px rgba(0,0,0,.65);
+  animation:work-pop .2s ease-out
+}
+.work-modal-close{
+  position:sticky;
+  top:14px;
+  float:right;
+  z-index:3;
+  width:32px;
+  height:32px;
+  margin:14px 14px -46px 0;
+  display:grid;
+  place-items:center;
+  border:1px solid #3a4048;
+  border-radius:50%;
+  background:#1a1d22;
+  color:#d7d4cb;
+  font-size:14px;
+  transition:border-color .2s ease,background .2s ease,color .2s ease
+}
+.work-modal-close:hover{
+  border-color:var(--work-accent);
+  color:var(--work-accent);
+  background:#20242a
+}
+.work-modal-head{
+  display:grid;
+  grid-template-columns:76px minmax(0,1fr);
+  gap:18px;
+  padding:28px 30px 22px;
+  border-bottom:1px solid #2b3037
+}
+.work-modal-icon{
+  width:68px;
+  height:68px;
+  display:grid;
+  place-items:center;
+  border-radius:18px;
+  border:1px solid color-mix(in srgb, var(--work-accent) 55%, #3a4048);
+  background:color-mix(in srgb, var(--work-accent) 11%, #121418);
+  color:var(--work-accent);
+  font-size:27px
+}
+.work-modal-tags{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-bottom:8px
+}
+.work-modal-headline h2{
+  margin:0;
+  padding-right:40px;
+  font-size:31px;
+  line-height:1.06
+}
+.work-modal-meta{
+  margin:7px 0 0;
+  color:#777f8b;
+  font:10px "DM Mono",monospace;
+  letter-spacing:.03em
+}
+.work-duration-big{
+  color:#d6d2ca;
+  font:10px "DM Mono",monospace
+}
+.work-modal-body{padding:26px 30px 32px}
+.work-summary{
+  max-width:780px;
+  margin:0 0 20px;
+  color:#d4d0c8;
+  font-size:15px;
+  line-height:1.68
+}
+.work-details{
+  display:grid;
+  gap:12px;
+  max-width:850px
+}
+.work-details p{
+  margin:0;
+  padding:14px 16px;
+  border:1px solid #2d3239;
+  border-left:2px solid var(--work-accent);
+  border-radius:4px;
+  background:#191c21;
+  color:#a8afb8;
+  font-size:13px;
+  line-height:1.65
+}
+.work-gallery{margin-top:28px}
+.work-gallery h4{
+  margin:0 0 12px;
+  color:#d8d5cd;
+  font:500 10px "DM Mono",monospace;
+  letter-spacing:.13em;
+  text-transform:uppercase
+}
+.work-gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px
+}
+.work-media{
+  min-width:0;
+  margin:0;
+  overflow:hidden;
+  border:1px solid #30353d;
+  border-radius:5px;
+  background:#101215
+}
+.work-media-image img,
+.work-media-video video{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:480px;
+  object-fit:contain;
+  background:#0e1012
+}
+.work-media-embed{
+  aspect-ratio:16/9
+}
+.work-media-embed iframe{
+  display:block;
+  width:100%;
+  height:100%;
+  border:0
+}
+.work-media-pdf{
+  min-height:520px
+}
+.work-media-pdf iframe{
+  display:block;
+  width:100%;
+  height:520px;
+  border:0;
+  background:#fff
+}
+.work-media figcaption{
+  padding:9px 11px;
+  border-top:1px solid #2a2f36;
+  color:#7f8792;
+  font-size:10px;
+  line-height:1.45
+}
+.work-media figcaption a{
+  color:#d4d0c7;
+  text-decoration:underline;
+  text-underline-offset:3px
+}
+.work-gallery-empty{
+  margin-top:28px;
+  padding:26px 20px;
+  border:1px dashed #3a4048;
+  border-radius:5px;
+  text-align:center;
+  background:#13161a
+}
+.work-gallery-empty span{display:block;font-size:22px;margin-bottom:8px}
+.work-gallery-empty p{margin:0 0 6px;color:#9ca3ad;font-size:12px}
+.work-gallery-empty small{
+  display:block;
+  max-width:58ch;
+  margin:0 auto;
+  color:#6f7782;
+  font-size:10px;
+  line-height:1.55
+}
+.work-gallery-empty code{color:var(--yellow);font:10px "DM Mono",monospace}
+
+@keyframes work-fade{from{opacity:0}to{opacity:1}}
+@keyframes work-pop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+
+
+.filter-rail{display:flex;gap:7px;overflow:auto;padding:4px 0 18px;scrollbar-width:none}
+.filter-rail button{
+  flex:0 0 auto;border:1px solid #333941;background:#16191e;color:#8f96a0;
+  padding:8px 11px;border-radius:3px;font:10px "DM Mono"
+}
+.filter-rail button.selected{background:var(--orange);border-color:var(--orange);color:#171717}
+
+/* ============================= PROJECTS ============================= */
+.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.project-card{
+  min-height:320px;padding:18px;background:#181b20;border:1px solid #30353d;border-radius:4px;
+  display:flex;flex-direction:column;transition:transform .2s,border-color .2s
+}
+.project-card:hover{transform:translateY(-4px);border-color:#555d68}
+.project-top{display:flex;justify-content:space-between;font:10px "DM Mono";color:#6e7681}
+.project-top small{color:var(--orange)}
+.project-type{margin:32px 0 7px;font:9px "DM Mono";letter-spacing:.1em;color:#707883;text-transform:uppercase}
+.project-card h3{margin:0;font-size:24px;font-weight:600}
+.project-description{color:#9da3ad;line-height:1.58;font-size:13px;margin:10px 0 18px}
+.tag-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+.tag-list span{font:9px "DM Mono";border:1px solid #30363f;border-radius:999px;color:#9ca3ad;padding:5px 7px}
+
+/* ======================= ENGINEERING MINDSET ======================= */
+.mindset-section{position:relative}
+.mindset-layout{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.mindset-list{border:1px solid #2d333b;border-radius:4px;overflow:hidden}
+.mindset-row{
+  width:100%;display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:12px;
+  padding:15px;background:#16191e;color:#a9afb7;border:0;border-bottom:1px solid #272c33;text-align:left
+}
+.mindset-row:last-child{border-bottom:0}
+.mindset-row span{font:9px "DM Mono";color:#646c77}
+.mindset-row b{font-size:13px;color:#b6bbc2}
+.mindset-row small{font:8px "DM Mono";color:#68707b;text-align:right}
+.mindset-row.active{background:#1f242a}
+.mindset-row.active b{color:#f3f0e8}
+.mindset-row.active span{color:var(--orange)}
+.mindset-detail{
+  position:relative;min-height:390px;padding:28px;background:
+  linear-gradient(140deg,rgba(242,154,46,.14),transparent 45%),#1a1d22;
+  border:1px solid #343a42;border-radius:4px;overflow:hidden
+}
+.mindset-detail:after{
+  content:"";position:absolute;width:220px;height:220px;right:-70px;bottom:-80px;border:1px solid #464d57;border-radius:50%;
+  box-shadow:0 0 0 35px rgba(255,255,255,.02),0 0 0 70px rgba(255,255,255,.015)
+}
+.detail-dot{width:10px;height:10px;border-radius:50%;background:var(--orange);box-shadow:0 0 20px rgba(242,154,46,.4)}
+.mindset-detail p{font:9px "DM Mono";letter-spacing:.12em;color:#767e89;margin:44px 0 8px}
+.mindset-detail h3{font:600 42px "Barlow Condensed";text-transform:uppercase;line-height:.9;margin:0 0 14px}
+.mindset-detail strong{display:block;max-width:430px;color:#d4d0c7;font-size:16px;line-height:1.6}
+.mindset-detail>span{display:block;max-width:430px;color:#8f96a0;font-size:12px;line-height:1.6;margin-top:14px}
+.detail-line{display:flex;gap:6px;position:absolute;bottom:23px;left:28px}
+.detail-line i{width:34px;height:3px;background:#41474f}.detail-line i:first-child{background:var(--orange)}
+
+/* ============================= CONTACT ============================= */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start}
+.contact-copy h2{margin-bottom:17px}.contact-copy>p:not(.overline){max-width:580px;color:#969da7;line-height:1.7;font-size:15px}
+.contact-stack{display:grid;gap:7px}
+.contact-stack a{
+  display:flex;justify-content:space-between;align-items:center;padding:17px;
+  border:1px solid #30353d;background:#181b20;border-radius:4px
+}
+.contact-stack span{font:9px "DM Mono";color:#777f8a}.contact-stack b{font-size:12px;color:#d6d3ca}
+.resume-card{
+  grid-column:1/-1;display:flex;align-items:center;gap:18px;margin-top:13px;padding:18px;
+  border:1px dashed #555c65;background:#171a1e;border-radius:4px
+}
+.resume-card:hover{border-color:var(--yellow)}
+/* White backing card behind the QR code. The QR is intentionally kept
+ * inside a fixed-size box so it cannot overlap the resume text. */
+.resume-qr{
+  flex:0 0 150px;width:150px;height:150px;background:#fff;border-radius:6px;
+  display:grid;place-items:center;padding:9px;box-sizing:border-box;
+  overflow:hidden
+}
+.resume-qr svg{display:block;width:132px;height:132px;max-width:100%;max-height:100%}
+.resume-card .overline{margin:0 0 4px}.resume-card h3{margin:0;font-size:17px}.resume-card p{margin:0}.resume-card>div:nth-child(2)>span{color:#777f89;font-size:10px}
+.resume-card>b{margin-left:auto;color:var(--orange)}
+footer{max-width:1240px;margin:auto;padding:35px 28px 70px;color:#666e79;display:flex;justify-content:space-between;font:9px "DM Mono";border-top:1px solid #20252b}
+
+/* ========================= HIRING ASSISTANT (CHAT) ========================= */
+.chat-launch{
+  position:fixed;right:20px;bottom:18px;z-index:70;display:flex;align-items:center;gap:8px;
+  border:1px solid #4a515a;background:#1c2025;color:#e4e1d8;padding:11px 13px;border-radius:999px;
+  box-shadow:0 15px 50px rgba(0,0,0,.45)
+}
+.chat-pulse{width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 6px rgba(242,154,46,.08)}
+.chat-window{
+  position:fixed;right:20px;bottom:72px;z-index:69;width:min(390px,calc(100vw - 32px));height:500px;
+  display:flex;flex-direction:column;background:#111419;border:1px solid #353b43;border-radius:5px;overflow:hidden;
+  box-shadow:0 25px 100px rgba(0,0,0,.6)
+}
+.chat-header{display:flex;justify-content:space-between;padding:14px;border-bottom:1px solid #2a3037}
+.chat-header b{display:block;font-size:13px}
+.chat-header small{display:flex;align-items:center;gap:5px;margin-top:3px;color:#6e7680;font-size:9px;font-family:"DM Mono"}
+/* Small status indicator styles retained for the optional portfolio assistant UI. */
+.status-dot{width:6px;height:6px;border-radius:50%;flex:0 0 auto;background:#6e7680}
+.status-dot.status-online{background:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.5)}
+.status-dot.status-offline{background:#f0654a}
+.status-dot.status-unknown{background:#6e7680;animation:pulseDot 1.4s ease-in-out infinite}
+@keyframes pulseDot{50%{opacity:.3}}
+.close-chat{border:0;background:none;color:#a6adb6;font-size:21px}
+.chat-log{flex:1;overflow:auto;display:flex;flex-direction:column;gap:7px;padding:12px}
+.chat-msg{
+  max-width:84%;padding:9px 11px;border-radius:4px;font-size:12px;line-height:1.5;
+  overflow-wrap:anywhere; /* keeps a long URL/token from blowing out the 84% bubble width */
+  display:flex;flex-direction:column;gap:8px /* spacing between formatMessage()'s p/ul/ol blocks */
+}
+.chat-msg.user{align-self:flex-end;background:#efece3;color:#222}
+.chat-msg.assistant{align-self:flex-start;background:#1e2329;color:#c3c8d0}
+.borb-thinking{display:inline-flex;align-items:center;gap:5px}
+.borb-thinking span{width:4px;height:4px;border-radius:50%;background:#9aa3ad;animation:borbThink 1.1s ease-in-out infinite}
+.borb-thinking span:nth-child(2){animation-delay:.16s}.borb-thinking span:nth-child(3){animation-delay:.32s}
+@keyframes borbThink{0%,70%,100%{opacity:.28;transform:translateY(0)}35%{opacity:1;transform:translateY(-2px)}}
+/* Elements produced by formatMessage()/formatInline() in Chatbot.jsx.
+ * Margins are zeroed out because .chat-msg's flex `gap` above already
+ * spaces the blocks — without this, browser default <p>/<ul> margins would
+ * stack on top of that gap and every reply would have huge dead space. */
+.chat-msg p,.chat-msg ul,.chat-msg ol{margin:0}
+.chat-msg ul,.chat-msg ol{padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.chat-msg .chat-heading{font-weight:700;color:inherit}
+.chat-msg strong{font-weight:700}
+.chat-msg em{font-style:italic}
+.chat-msg code{
+  font-family:"DM Mono",monospace;font-size:11px;background:rgba(255,255,255,.08);
+  padding:1px 4px;border-radius:3px
+}
+.chat-msg.user code{background:rgba(0,0,0,.08)} /* user bubble is light — dark-on-dark code chip would vanish */
+.chat-compose{display:flex;gap:7px;border-top:1px solid #2a3037;padding:9px}
+.chat-compose input{flex:1;min-width:0;border:1px solid #343a42;background:#171a1f;color:#eee;padding:10px;border-radius:4px;outline:none}
+.chat-compose button{width:42px;border:0;border-radius:4px;background:var(--orange);color:#151515;font-weight:700}
+/* ======================= RESPONSIVE BREAKPOINTS ======================= */
+/* Tablet/small-laptop: stack the hero, collapse cert/project grids. */
+@media(max-width:980px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding-top:80px}
+  .portrait-stage{min-height:540px}
+  .portrait-column{order:2;margin-top:10px}
+  .hero-ribbon{order:3}
+  .cert-card{min-width:190px}
+  .project-grid{grid-template-columns:1fr 1fr}
+  .mindset-layout,.contact{grid-template-columns:1fr}
+}
+/* Phone: hide the desktop nav behind a hamburger, single-column everything. */
+@media(max-width:680px){
+  .section{padding:82px 18px 28px}.nav-shell{padding:11px 18px}.wordmark span:last-child{display:none}
+  .nav{display:none}.nav.open{display:flex;position:absolute;left:10px;right:10px;top:57px;padding:7px;flex-direction:column;background:#14171b;border:1px solid #323840}
+  .mobile-menu{display:block}.resume-mini{display:none}
+  .hero h1{font-size:clamp(48px,16vw,78px)}
+  .hero-intro{font-size:16px}.portrait-stage{min-height:470px}
+  .portrait-placeholder{left:10%;width:80%}
+  .hero-ribbon{grid-template-columns:1fr;gap:10px}
+  .section-heading{display:block}.section-heading>p{margin-top:12px}
+  .cert-arrow{display:none} /* touch swipe covers this on phones */
+  .cert-card{min-width:78vw}
+  .work-card{grid-template-columns:70px minmax(0,1fr);min-height:0}
+  .work-icon-wrap{min-height:104px;border-right:1px solid #30353d}
+  .work-icon-wrap:after{width:50px;height:50px}
+  .work-icon{width:42px;height:42px;border-radius:12px;font-size:18px}
+  .work-copy{padding:18px 17px}
+  .work-head h3{font-size:19px}
+  .work-bullets{margin-top:14px}
+  .work-side{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;padding:11px 16px;border-left:0;border-top:1px solid #2c3138;text-align:left}
+  .work-open-hint{margin-left:auto}
+  .work-modal-overlay{padding:10px}
+  .work-modal{max-height:92vh}
+  .work-modal-head{grid-template-columns:56px minmax(0,1fr);gap:12px;padding:20px 18px 18px}
+  .work-modal-icon{width:50px;height:50px;border-radius:14px;font-size:20px}
+  .work-modal-headline h2{font-size:24px}
+  .work-modal-body{padding:20px 18px 24px}
+  .work-gallery-grid{grid-template-columns:1fr}
+  .work-media-pdf,.work-media-pdf iframe{min-height:360px;height:360px}
+  .project-grid{grid-template-columns:1fr}
+  .mindset-row{grid-template-columns:28px 1fr}.mindset-row small{display:none}
+  .mindset-detail{min-height:330px}
+  .contact-stack a{display:block}.contact-stack b{display:block;margin-top:5px}
+  .resume-card{align-items:flex-start}.resume-card>b{display:none}.resume-qr{flex-basis:132px;width:132px;height:132px}.resume-qr svg{width:114px;height:114px}
+  footer{padding:28px 18px 55px;flex-direction:column;gap:7px}
+}
+/* Respect the OS-level "reduce motion" accessibility setting: kill every
+ * animation/transition site-wide (parallax cards, hover lifts, the chat
+ * pulse dot, etc.) for anyone who has it turned on. Don't remove this. */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+
+.project-link {
+  display: inline-flex;
+  margin-top: 1rem;
+  color: inherit;
+  font-size: .78rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* =========================== BOR B ASSISTANT =========================== */
+.borb-launch{min-height:48px;padding:7px 13px 7px 8px;gap:9px}
+.borb-orb{position:relative;flex:0 0 auto;width:34px;height:34px;border:1px solid #646b74;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffeaa6 0 8%,#f2a43a 35%,#a95c12 72%,#2c2011 100%);box-shadow:0 0 0 5px rgba(242,154,46,.08),0 8px 24px rgba(0,0,0,.35);animation:borbFloat 3.6s ease-in-out infinite}
+.borb-orb:before,.borb-orb:after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+.borb-orb:before{inset:4px;border:1px solid rgba(255,255,255,.18)}
+.borb-orb:after{left:4px;right:4px;bottom:-5px;height:8px;background:rgba(242,154,46,.18);filter:blur(5px);z-index:-1}
+.borb-eye{position:absolute;top:12px;width:4px;height:6px;border-radius:50%;background:#171717;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
+.borb-eye-left{left:10px}.borb-eye-right{right:10px}
+.borb-mouth{position:absolute;left:50%;bottom:8px;width:9px;height:4px;transform:translateX(-50%);border-bottom:1.5px solid #171717;border-radius:0 0 8px 8px}
+.borb-label{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1}
+.borb-label b{font-size:11px;color:#f2eee4}.borb-label small{margin-top:3px;color:#7e8792;font:8px "DM Mono",monospace}
+.borb-header-brand{display:flex;align-items:center;gap:9px}
+.borb-orb-small{width:26px;height:26px;box-shadow:0 0 0 4px rgba(242,154,46,.06)}
+.borb-orb-small .borb-eye{top:9px;width:3px;height:5px}.borb-orb-small .borb-eye-left{left:8px}.borb-orb-small .borb-eye-right{right:8px}.borb-orb-small .borb-mouth{bottom:6px;width:7px;height:3px}
+@keyframes borbFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-3px) rotate(1deg)}}
+@media(max-width:680px){.chat-launch{right:12px;bottom:12px}.chat-window{right:12px;bottom:70px;width:calc(100vw - 24px);height:min(520px,calc(100vh - 96px))}.borb-label{display:none}.borb-launch{padding:7px;width:50px;justify-content:center}}
+
+
+/* Recruiter-focused resume section */
+.resume-section { scroll-margin-top: 88px; }
+.resume-summary-block, .resume-card-block { border: 1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.035); border-radius: 22px; padding: 24px; }
+.resume-summary-block > p:last-child { margin: 8px 0 0; max-width: 980px; font-size: 1.05rem; line-height: 1.78; color: rgba(255,255,255,.82); }
+.resume-grid { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:16px; margin-top:16px; }
+.resume-skill-groups { display:grid; gap:18px; margin-top:14px; }
+.resume-skill-group h3 { margin:0 0 9px; font-size:.9rem; }
+.resume-pill-list { display:flex; flex-wrap:wrap; gap:7px; }
+.resume-pill-list span { border:1px solid rgba(255,255,255,.11); background:rgba(255,255,255,.035); border-radius:999px; padding:7px 10px; font-size:.74rem; color:rgba(255,255,255,.76); }
+.resume-education-list { display:grid; gap:16px; margin-top:14px; }
+.resume-education-item { padding:14px 0; border-top:1px solid rgba(255,255,255,.08); display:grid; gap:4px; }
+.resume-education-item:first-child { border-top:0; padding-top:0; }
+.resume-education-item h3 { margin:0; font-size:.92rem; }
+.resume-education-item p { margin:2px 0; color:rgba(255,255,255,.75); }
+.resume-education-item span, .resume-education-item small { color:rgba(255,255,255,.54); font-size:.72rem; }
+.resume-activity-list, .resume-language-list { display:grid; gap:9px; margin-top:14px; }
+.resume-activity-item { display:flex; gap:9px; align-items:flex-start; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.08); }
+.resume-activity-item:last-child { border-bottom:0; }
+.resume-activity-item span { width:20px; height:20px; border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.08); font-size:.68rem; flex:0 0 auto; }
+.resume-activity-item b { font-size:.8rem; font-weight:650; color:rgba(255,255,255,.82); }
+.resume-language-list > div { display:flex; justify-content:space-between; gap:20px; padding:11px 0; border-bottom:1px solid rgba(255,255,255,.08); }
+.resume-language-list > div:last-child { border-bottom:0; }
+.resume-language-list b { font-size:.82rem; }
+.resume-language-list span { color:rgba(255,255,255,.58); font-size:.74rem; text-align:right; }
+@media (max-width: 780px) { .resume-grid { grid-template-columns:1fr; } .resume-summary-block, .resume-card-block { padding:18px; } .resume-language-list > div { flex-direction:column; gap:3px; } .resume-language-list span { text-align:left; } }
+
+/* Public navigation: the resume is intentionally not a public section.
+ * Its QR remains available inside Contact. */

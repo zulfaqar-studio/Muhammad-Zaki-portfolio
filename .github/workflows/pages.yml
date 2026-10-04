@@ -1,0 +1,152 @@
+name: Deploy portfolio to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: portfolio-pages-deploy
+  cancel-in-progress: true
+
+env:
+  DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL || secrets.DEEPSEEK_MODEL || 'deepseek-flash' }}
+  DRIVE_CHATBOT_FOLDER_ID: ${{ vars.DRIVE_CHATBOT_FOLDER_ID || secrets.DRIVE_CHATBOT_FOLDER_ID }}
+  DRIVE_MAX_CONTEXT_CHARS: ${{ vars.DRIVE_MAX_CONTEXT_CHARS || secrets.DRIVE_MAX_CONTEXT_CHARS || '30000' }}
+  DRIVE_MEDIA_FOLDER_ID: ${{ vars.DRIVE_MEDIA_FOLDER_ID || secrets.DRIVE_MEDIA_FOLDER_ID }}
+  DRIVE_OVERALL_FOLDER_ID: ${{ vars.DRIVE_OVERALL_FOLDER_ID || secrets.DRIVE_OVERALL_FOLDER_ID }}
+  DRIVE_OVERALL_MANIFEST_NAME: ${{ vars.DRIVE_OVERALL_MANIFEST_NAME || secrets.DRIVE_OVERALL_MANIFEST_NAME || 'drive-media.json' }}
+  GOOGLE_DRIVE_PUBLIC_API_KEY: ${{ vars.GOOGLE_DRIVE_PUBLIC_API_KEY || secrets.GOOGLE_DRIVE_PUBLIC_API_KEY }}
+  GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID: ${{ vars.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID || secrets.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID }}
+  GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID: ${{ vars.GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID || secrets.GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID }}
+  GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL || vars.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+  GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY || vars.GOOGLE_SERVICE_ACCOUNT_KEY }}
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || vars.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+  VITE_API_BASE_URL: https://zaki-portfolio-rouge.vercel.app
+  VITE_BASE_PATH: /Muhammad-Zaki-portfolio/
+  VITE_PUBLIC_SITE_URL: https://zulfaqar-studio.github.io/Muhammad-Zaki-portfolio/
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: global
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check optional publishing configuration
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DRIVE_CHATBOT_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          DRIVE_MEDIA_FOLDER_ID: ${{ env.DRIVE_MEDIA_FOLDER_ID }}
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+        run: |
+          if [ -n "$DEEPSEEK_API_KEY" ] && [ -n "$DRIVE_CHATBOT_FOLDER_ID" ] && [ -n "$GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL" ] && [ -n "$GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY" ]; then
+            echo "HAS_CHATBOT_GENERATION=true" >> "$GITHUB_ENV"
+          else
+            echo "HAS_CHATBOT_GENERATION=false" >> "$GITHUB_ENV"
+            echo "Chatbot generation secrets are incomplete; keeping the checked-in knowledge file."
+          fi
+          if [ -n "$DRIVE_MEDIA_FOLDER_ID" ] && [ -n "$GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL" ] && [ -n "$GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY" ]; then
+            echo "HAS_DRIVE_MEDIA=true" >> "$GITHUB_ENV"
+          else
+            echo "HAS_DRIVE_MEDIA=false" >> "$GITHUB_ENV"
+            echo "Drive media credentials are incomplete; keeping the checked-in media manifest."
+          fi
+
+      - name: Generate static repository media manifest
+        run: node scripts/generate-static-media-manifest.mjs
+
+      - name: Check chatbot Drive source fingerprint
+        if: env.HAS_CHATBOT_GENERATION == 'true'
+        id: drive_fingerprint
+        run: node scripts/get-drive-fingerprint.mjs
+        env:
+          DEEPSEEK_SOURCE_DRIVE_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+
+      - name: Restore DeepSeek knowledge cache
+        if: env.HAS_CHATBOT_GENERATION == 'true'
+        id: deepseek_cache
+        uses: actions/cache@v4
+        with:
+          path: client/public/data/deepseek.json
+          key: deepseek-data-v3-${{ steps.drive_fingerprint.outputs.hash }}
+
+      - name: Generate chatbot knowledge from Google Drive
+        if: env.HAS_CHATBOT_GENERATION == 'true' && steps.deepseek_cache.outputs.cache-hit != 'true'
+        run: node scripts/generate-deepseek-data.mjs
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: ${{ env.DEEPSEEK_MODEL }}
+          DEEPSEEK_SOURCE_DRIVE_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          DRIVE_CHATBOT_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          DRIVE_MAX_CONTEXT_CHARS: ${{ env.DRIVE_MAX_CONTEXT_CHARS }}
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          DEEPSEEK_DRIVE_MAX_FILES: '120'
+          DEEPSEEK_DRIVE_MAX_DEPTH: '5'
+          DEEPSEEK_KNOWLEDGE_MAX_TOKENS: '12000'
+          DEEPSEEK_SOURCE_FINGERPRINT: ${{ steps.drive_fingerprint.outputs.hash }}
+
+      - name: Generate public Google Drive media manifest
+        if: env.HAS_DRIVE_MEDIA == 'true'
+        run: node scripts/generate-drive-media-manifest.mjs
+        env:
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID: ${{ env.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID || env.DRIVE_MEDIA_FOLDER_ID }}
+          GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID: ${{ env.GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID }}
+          PUBLIC_DRIVE_MAX_FILES: '500'
+          PUBLIC_DRIVE_MAX_DEPTH: '6'
+
+      - name: Build public client
+        run: npm run build:client
+        env:
+          NODE_ENV: production
+          VITE_API_BASE_URL: ${{ env.VITE_API_BASE_URL }}
+          VITE_BASE_PATH: ${{ env.VITE_BASE_PATH }}
+          VITE_PUBLIC_SITE_URL: ${{ env.VITE_PUBLIC_SITE_URL }}
+
+      - name: Prepare Pages site
+        run: |
+          rm -rf _site
+          mkdir -p _site
+          cp -R client/dist/. _site/
+          touch _site/.nojekyll
+          cp _site/index.html _site/404.html
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

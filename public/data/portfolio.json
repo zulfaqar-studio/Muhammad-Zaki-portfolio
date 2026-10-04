@@ -1,0 +1,274 @@
+{
+  "profile": {
+    "name": "MUHAMMAD ZAKI",
+    "role": "Rapid Transit & Mechanical Engineering",
+    "location": "Singapore",
+    "heroTitle": "Make things work.",
+    "heroEmphasis": "Make them work well.",
+    "heroTraits": [
+      "Curiosity",
+      "Troubleshooting",
+      "Safety",
+      "Teamwork",
+      "Continuous learning"
+    ],
+    "intro": "A hands-on engineering graduate trained in rapid transit technology and mechanical servicing, with a practical approach to learning, troubleshooting and getting a fix right the first time.",
+    "summary": "Graduate of the Institute of Technical Education, holding a National ITE Certificate in Rapid Transit Technology and an ITE Skills Certificate in Mechanical Servicing, with internship experience at SMRT Corporation and NIPPON Express. Focused on equipment maintenance, workshop practice, workplace safety and following procedure carefully in a technical environment.",
+    "portraitUrl": "profile/potrait.jpeg",
+    "resumeUrl": "https://bit.ly/MZAKI-resume",
+    "contacts": {
+      "linkedin": "https://www.linkedin.com/in/YOUR-HANDLE",
+      "x": "https://x.com/YOUR-HANDLE",
+      "telegram": "https://t.me/YOUR-HANDLE",
+      "email": "mailto:zakipendeq@gmail.com"
+    },
+    "contactLinks": [
+      {
+        "id": "contact-linkedin",
+        "kind": "linkedin",
+        "label": "LinkedIn",
+        "description": "Professional profile",
+        "url": "https://www.linkedin.com/in/YOUR-HANDLE"
+      },
+      {
+        "id": "contact-x",
+        "kind": "x",
+        "label": "X / Twitter",
+        "description": "Public updates",
+        "url": "https://x.com/YOUR-HANDLE"
+      },
+      {
+        "id": "contact-telegram",
+        "kind": "telegram",
+        "label": "Telegram",
+        "description": "Direct message",
+        "url": "https://t.me/YOUR-HANDLE"
+      },
+      {
+        "id": "contact-email",
+        "kind": "email",
+        "label": "Email",
+        "description": "zakipendeq@gmail.com",
+        "url": "mailto:zakipendeq@gmail.com"
+      }
+    ]
+  },
+  "certifications": [
+    {
+      "title": "National ITE Certificate — Rapid Transit Technology",
+      "issuer": "Institute of Technical Education (ITE)",
+      "year": "2024",
+      "code": "RTT",
+      "image": "certs/ITEC rapid transit technology completion.jpg"
+    },
+    {
+      "title": "ITE Skills Certificate — Mechanical Servicing",
+      "issuer": "Institute of Technical Education (ITE)",
+      "year": "2021",
+      "code": "MS",
+      "image": "certs/Crest Secondary ISC.jpg"
+    },
+    {
+      "title": "Forklift Operator (OT) License",
+      "issuer": "Workspace Singapore x NTUC Learning Hub",
+      "year": "2025",
+      "code": "OT",
+      "image": "certs/Fork lift lincese.jpeg"
+    },
+    {
+      "title": "NIPPON Express part time",
+      "issuer": "NIPPON Express",
+      "year": "2024",
+      "code": "NE",
+      "image": "certs/Nippon Express working attribute slip.jpg"
+    },
+    {
+      "title": "SMRT Internship completion cert",
+      "issuer": "SMRT corp, ITE",
+      "year": "2023",
+      "code": "NE",
+      "image": "certs/SMRT Intership completion cert.jpg"
+    },
+    {
+      "title": "Car license (Indonesia class A)",
+      "issuer": "Indonesia Surat Izin Mengemudi (SIM)",
+      "year": "2004",
+      "code": "SIM",
+      "image": "certs/Car license.jpg"
+    },
+    {
+      "title": "Motorcycle license (Indonesia class A)",
+      "issuer": "Indonesia Surat Izin Mengemudi (SIM)",
+      "year": "2004",
+      "code": "SIM",
+      "image": "certs/motorcycle license.jpg"
+    }
+  ],
+  "workExperience": [
+    {
+      "id": "guardian-parttime",
+      "type": "parttime",
+      "role": "Retail Assistant",
+      "company": "Guardian Health & Beauty",
+      "location": "Singapore",
+      "duration": "Nov 2021 — Jan 2024",
+      "bullets": [
+        "Customer Service",
+        "Sales and Transactions",
+        "Inventory Management",
+        "Store Operations",
+        "Administrative Duties"
+      ],
+      "summary": "Part-time retail role focusing on customer service, sales, and store operations.",
+      "details": [
+        "Provided excellent customer service and assisted with sales transactions.",
+        "Managed inventory levels and ensured products were properly displayed.",
+        "Supported daily store operations and performed administrative tasks."
+      ],
+      "media": [
+        {}
+      ]
+    },
+    {
+      "id": "nippon-parttime",
+      "type": "fulltime",
+      "role": "Warehouse Operator",
+      "company": "NIPPON Express",
+      "location": "Singapore",
+      "duration": "Jun 2024 — Apr 2025",
+      "bullets": [
+        "Packing and shipping",
+        "Inventory management",
+        "Loading and unloading",
+        "Forklift operation",
+        "Customer service"
+      ],
+      "summary": "Part-time operations role handling warehouse movement, dispatch prep and licensed forklift / reach-truck operation.",
+      "details": [
+        "Warehouse logistics operations rely on the seamless integration of physical handling, inventory control, and communication. Personnel safely use heavy machinery like forklifts to move large goods, while also manually loading and unloading delivery vehicles.",
+        "To ensure order accuracy, items are carefully packaged, labeled, and prepared for shipping, while the warehouse tracking system is updated to maintain exact stock levels and proper storage conditions.",
+        "Finally, team members manage external relationships by answering inquiries and resolving issues for both customers and suppliers."
+      ],
+      "media": [
+        {
+          "type": "image",
+          "src": "certs/Nippon Express working attribute slip.jpg",
+          "title": "NIPPON Express work document"
+        },
+        {
+          "type": "image",
+          "src": "certs/Fork lift lincese.jpeg",
+          "title": "obtained a fork lift operator license (OT) for warehouse operations"
+        }
+      ]
+    },
+    {
+      "id": "smrt-internship",
+      "type": "internship",
+      "role": "Engineering Intern — Rail Operations",
+      "company": "SMRT Corporation",
+      "location": "Singapore",
+      "duration": "Jan 2023 — Jun 2023",
+      "bullets": [
+        "Assisted technicians with preventive maintenance on depot equipment safely daily",
+        "Followed safety procedures when working around rolling-stock systems onsite daily",
+        "Completed daily logs and handover notes in a shared system"
+      ],
+      "summary": "Six-month internship placement at SMRT supporting depot and engineering operations under technician supervision.",
+      "details": [
+        "Rotated across two depot work areas to support scheduled preventive maintenance and corrective tasks, shadowing senior technicians and handling assigned hands-on work under direct supervision.",
+        "Used calibrated tooling for basic disassembly, inspection and reassembly of mechanical subsystems, and recorded each step clearly in the shared shift log so the next technician could pick up the work without guessing.",
+        "Took part in daily toolbox talks and weekly safety briefings, contributed near-miss observations, and completed the role with no safety incidents across the full placement."
+      ],
+      "media": [
+        {
+          "type": "image",
+          "src": "certs/SMRT Intership completion cert.jpg",
+          "title": "SMRT internship completion certificate"
+        }
+      ]
+    },
+    {
+      "id": "future-fulltime-placeholder",
+      "type": "fulltime",
+      "role": "Full-time role — add your next step",
+      "company": "Your company",
+      "location": "Singapore",
+      "duration": "Add dates",
+      "bullets": [
+        "Replace this placeholder with your first full-time engineering role today",
+        "Add three concise achievements showing responsibility, skills, and measurable impact",
+        "Include the duration here so visitors see your timeline clearly"
+      ],
+      "summary": "Placeholder for your next full-time engineering or technical role.",
+      "details": [
+        "Replace this object with your real role, company, dates and achievements when you have them.",
+        "Add supporting photos, PDFs, videos or external media to the `media` array so the same expanded modal becomes a complete case-study style work entry."
+      ],
+      "media": []
+    }
+  ],
+  "projects": [
+    {
+      "title": "SMRT Corporation — Engineering Internship",
+      "type": "Internship",
+      "status": "Completed",
+      "description": "Completed an engineering-focused internship with SMRT Corporation as part of ITE training, gaining hands-on exposure to a professional engineering and technical operations environment through safety-conscious, practical learning.",
+      "tags": [
+        "Internship",
+        "Rail Engineering",
+        "Safety"
+      ]
+    },
+    {
+      "title": "NIPPON Express — Operations work experience",
+      "type": "Internship",
+      "status": "Completed",
+      "description": "Completed an internship placement in a workplace operations environment, building practical experience in teamwork, responsibility and day-to-day operational tasks.",
+      "tags": [
+        "work-experience",
+        "part time",
+        "Operations",
+        "Teamwork"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "title": "Troubleshooting",
+      "eyebrow": "DIAGNOSE → ISOLATE → VERIFY",
+      "description": "Break a problem into observable signals, test assumptions, identify the fault and verify the fix.",
+      "detail": "Useful across technical systems, software and hands-on maintenance environments."
+    },
+    {
+      "title": "Safety Mindset",
+      "eyebrow": "CHECK → PROTECT → PROCEED",
+      "description": "Think about people, equipment and process before jumping into a task.",
+      "detail": "Safety is part of the workflow, not a final checkbox."
+    },
+    {
+      "title": "Team Communication",
+      "eyebrow": "HANDOVER → ALIGN → EXECUTE",
+      "description": "Share the state of a task clearly so others can act without guessing.",
+      "detail": "Good engineering work scales through good communication."
+    },
+    {
+      "title": "Continuous Learning",
+      "eyebrow": "LEARN → APPLY → REFLECT",
+      "description": "Turn training, observation and feedback into practical improvements.",
+      "detail": "Build skill by skill rather than treating learning as a one-time event."
+    },
+    {
+      "title": "Documentation",
+      "eyebrow": "CAPTURE → REPEAT → IMPROVE",
+      "description": "Write down what matters so a successful fix can be understood and repeated.",
+      "detail": "Useful notes reduce handover friction and make future troubleshooting faster."
+    },
+    {
+      "title": "Systems Thinking",
+      "eyebrow": "SEE THE WHOLE SYSTEM",
+      "description": "Understand how components, people, procedures and tools interact before changing one part.",
+      "detail": "The goal is reliable outcomes, not just a locally correct fix."
+    }
+  ]
+}

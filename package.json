@@ -1,0 +1,18 @@
+{
+  "name": "muhammad-zaki-portfolio-static",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n CLIENT,SERVER \"npm run dev --workspace client\" \"npm run dev --workspace server\"",
+    "dev:client": "npm run dev --workspace client",
+    "dev:server": "npm run dev --workspace server",
+    "build": "npm run build:client",
+    "build:client": "npm run build --workspace client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

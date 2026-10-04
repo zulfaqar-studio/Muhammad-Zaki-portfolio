@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-10-01T03:24:41.216Z",
+  "files": [
+    {
+      "path": "certs/Crest Secondary ISC.jpg",
+      "name": "Crest Secondary ISC.jpg"
+    },
+    {
+      "path": "certs/Fork lift lincese.jpeg",
+      "name": "Fork lift lincese.jpeg"
+    },
+    {
+      "path": "certs/ITEC rapid transit technology completion.jpg",
+      "name": "ITEC rapid transit technology completion.jpg"
+    },
+    {
+      "path": "certs/ITEC rapid transit technology.jpg",
+      "name": "ITEC rapid transit technology.jpg"
+    },
+    {
+      "path": "certs/Nippon Express working attribute slip.jpg",
+      "name": "Nippon Express working attribute slip.jpg"
+    },
+    {
+      "path": "certs/SMRT Intership completion cert.jpg",
+      "name": "SMRT Intership completion cert.jpg"
+    },
+    {
+      "path": "profile/potrait.jpeg",
+      "name": "potrait.jpeg"
+    }
+  ],
+  "byPath": {
+    "certs/crest secondary isc.jpg": "certs/Crest Secondary ISC.jpg",
+    "certs/fork lift lincese.jpeg": "certs/Fork lift lincese.jpeg",
+    "certs/itec rapid transit technology completion.jpg": "certs/ITEC rapid transit technology completion.jpg",
+    "certs/itec rapid transit technology.jpg": "certs/ITEC rapid transit technology.jpg",
+    "certs/nippon express working attribute slip.jpg": "certs/Nippon Express working attribute slip.jpg",
+    "certs/smrt intership completion cert.jpg": "certs/SMRT Intership completion cert.jpg",
+    "profile/potrait.jpeg": "profile/potrait.jpeg"
+  },
+  "byName": {
+    "crest secondary isc.jpg": "certs/Crest Secondary ISC.jpg",
+    "fork lift lincese.jpeg": "certs/Fork lift lincese.jpeg",
+    "itec rapid transit technology completion.jpg": "certs/ITEC rapid transit technology completion.jpg",
+    "itec rapid transit technology.jpg": "certs/ITEC rapid transit technology.jpg",
+    "nippon express working attribute slip.jpg": "certs/Nippon Express working attribute slip.jpg",
+    "smrt intership completion cert.jpg": "certs/SMRT Intership completion cert.jpg",
+    "potrait.jpeg": "profile/potrait.jpeg"
+  }
+}

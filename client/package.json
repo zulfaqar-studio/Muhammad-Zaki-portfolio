@@ -1,0 +1,23 @@
+{
+  "name": "muhammad-zaki-portfolio-client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/react": "^7.0.0",
+    "astro": "^7.3.5",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "lightningcss": "^1.33.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

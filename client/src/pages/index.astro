@@ -1,0 +1,28 @@
+---
+import App from "../App.jsx";
+import "../styles.css";
+
+const title = "Muhammad Zaki — Portfolio";
+const description = "Muhammad Zaki's portfolio covering rapid transit technology, mechanical engineering, work experience, projects, certifications and skills.";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#141414" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="image" href={`${import.meta.env.BASE_URL}profile/potrait.jpeg`} fetchpriority="high" type="image/jpeg" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <App client:idle={{ timeout: 750 }} />
+  </body>
+</html>

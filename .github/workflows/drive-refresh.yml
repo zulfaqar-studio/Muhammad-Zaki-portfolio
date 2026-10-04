@@ -1,0 +1,144 @@
+name: Refresh Google Drive data
+
+on:
+  schedule:
+    # Continue checking Google Drive every 30 minutes.
+    # When a fingerprint changes, regenerate the affected public data and push it.
+    - cron: '3,33 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: portfolio-pages
+  cancel-in-progress: false
+
+env:
+  DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL || secrets.DEEPSEEK_MODEL || 'deepseek-flash' }}
+  DRIVE_CHATBOT_FOLDER_ID: ${{ vars.DRIVE_CHATBOT_FOLDER_ID || secrets.DRIVE_CHATBOT_FOLDER_ID }}
+  DRIVE_MAX_CONTEXT_CHARS: ${{ vars.DRIVE_MAX_CONTEXT_CHARS || secrets.DRIVE_MAX_CONTEXT_CHARS || '30000' }}
+  DRIVE_MEDIA_FOLDER_ID: ${{ vars.DRIVE_MEDIA_FOLDER_ID || secrets.DRIVE_MEDIA_FOLDER_ID }}
+  GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID: ${{ vars.GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID || secrets.GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID }}
+  GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID: ${{ vars.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID || secrets.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID }}
+  GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL || vars.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || vars.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+  VITE_BASE_PATH: /Muhammad-Zaki-portfolio/
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    environment: global
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check chatbot Drive fingerprint
+        id: chatbot_fingerprint
+        run: node scripts/get-drive-fingerprint.mjs
+        env:
+          DEEPSEEK_SOURCE_DRIVE_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+
+      - name: Decide whether chatbot data changed
+        id: chatbot_change
+        shell: bash
+        run: |
+          CURRENT='${{ steps.chatbot_fingerprint.outputs.hash }}'
+          CACHED=$(node -e "try{const d=require('./client/public/data/deepseek.json'); process.stdout.write(d.sourceFingerprint||'')}catch(e){}")
+          if [ -n "$CURRENT" ] && [ "$CURRENT" = "$CACHED" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Regenerate DeepSeek knowledge from chatbot Drive
+        if: steps.chatbot_change.outputs.changed == 'true'
+        run: node scripts/generate-deepseek-data.mjs
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: ${{ env.DEEPSEEK_MODEL }}
+          DEEPSEEK_SOURCE_DRIVE_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          DRIVE_CHATBOT_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          DRIVE_MAX_CONTEXT_CHARS: ${{ env.DRIVE_MAX_CONTEXT_CHARS }}
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          DEEPSEEK_DRIVE_MAX_FILES: '120'
+          DEEPSEEK_DRIVE_MAX_DEPTH: '5'
+          DEEPSEEK_KNOWLEDGE_MAX_TOKENS: '12000'
+          DEEPSEEK_SOURCE_FINGERPRINT: ${{ steps.chatbot_fingerprint.outputs.hash }}
+
+      - name: Check public Drive media fingerprint
+        id: media_fingerprint
+        run: node scripts/get-public-drive-fingerprint.mjs
+        env:
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID: ${{ env.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID || env.DRIVE_MEDIA_FOLDER_ID }}
+          GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID: ${{ env.GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID }}
+
+      - name: Decide whether public Drive media changed
+        id: media_change
+        shell: bash
+        run: |
+          CURRENT='${{ steps.media_fingerprint.outputs.hash }}'
+          CACHED=$(node -e "try{const d=require('./client/public/data/drive-media.json'); process.stdout.write(d.sourceFingerprint||'')}catch(e){}")
+          if [ -n "$CURRENT" ] && [ "$CURRENT" = "$CACHED" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Regenerate public Drive media manifest
+        if: steps.media_change.outputs.changed == 'true'
+        run: node scripts/generate-drive-media-manifest.mjs
+        env:
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID: ${{ env.GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID || env.DRIVE_MEDIA_FOLDER_ID }}
+          GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID: ${{ env.GOOGLE_DRIVE_PUBLIC_CERT_FOLDER_ID }}
+          PUBLIC_DRIVE_MAX_FILES: '500'
+          PUBLIC_DRIVE_MAX_DEPTH: '6'
+          PUBLIC_DRIVE_SOURCE_FINGERPRINT: ${{ steps.media_fingerprint.outputs.hash }}
+
+      - name: Generate static repository media manifest
+        run: node scripts/generate-static-media-manifest.mjs
+
+      - name: Generate browser DeepSeek configuration
+        run: node scripts/generate-deepseek-config-secret.mjs
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: ${{ env.DEEPSEEK_MODEL }}
+
+      - name: Commit refreshed data
+        id: commit
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add client/public/data/deepseek.json client/public/data/drive-media.json client/public/data/static-media.json client/src/deepseek-config-secret.js
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No generated data changed."
+            exit 0
+          fi
+          git commit -m 'chore: refresh Drive-backed portfolio data'
+          git pull --rebase origin "${GITHUB_REF_NAME:-main}"
+          git push origin HEAD:"${GITHUB_REF_NAME:-main}"
+          echo "changed=true" >> "$GITHUB_OUTPUT"

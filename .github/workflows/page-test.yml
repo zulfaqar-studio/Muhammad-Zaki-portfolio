@@ -1,0 +1,321 @@
+name: Page Test - Deploy Portfolio
+
+on:
+  push:
+    branches:
+      - page-test
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: page-test
+  cancel-in-progress: true
+
+env:
+  # ============================================================
+  # GitHub Pages test URL
+  # ============================================================
+  VITE_BASE_PATH: /Muhammad-Zaki-portfolio/test/
+  VITE_PUBLIC_SITE_URL: https://zulfaqar-studio.github.io/Muhammad-Zaki-portfolio/test/
+
+  # ============================================================
+  # DeepSeek
+  # ============================================================
+  DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL || secrets.DEEPSEEK_MODEL || 'deepseek-flash' }}
+
+  # ============================================================
+  # Google Drive
+  # ============================================================
+  DRIVE_CHATBOT_FOLDER_ID: ${{ vars.DRIVE_CHATBOT_FOLDER_ID || secrets.DRIVE_CHATBOT_FOLDER_ID }}
+  DRIVE_MAX_CONTEXT_CHARS: ${{ vars.DRIVE_MAX_CONTEXT_CHARS || secrets.DRIVE_MAX_CONTEXT_CHARS || '30000' }}
+
+  DRIVE_MEDIA_FOLDER_ID: ${{ vars.DRIVE_MEDIA_FOLDER_ID || secrets.DRIVE_MEDIA_FOLDER_ID }}
+  DRIVE_OVERALL_FOLDER_ID: ${{ vars.DRIVE_OVERALL_FOLDER_ID || secrets.DRIVE_OVERALL_FOLDER_ID }}
+  DRIVE_OVERALL_MANIFEST_NAME: ${{ vars.DRIVE_OVERALL_MANIFEST_NAME || secrets.DRIVE_OVERALL_MANIFEST_NAME || 'drive-media.json' }}
+
+  GOOGLE_DRIVE_PUBLIC_API_KEY: ${{ vars.GOOGLE_DRIVE_PUBLIC_API_KEY || secrets.GOOGLE_DRIVE_PUBLIC_API_KEY }}
+
+  GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL || vars.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+  GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY || vars.GOOGLE_SERVICE_ACCOUNT_KEY }}
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || vars.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+
+  # ============================================================
+  # Optional API server
+  # ============================================================
+  VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL || secrets.VITE_API_BASE_URL }}
+
+jobs:
+
+  # ============================================================
+  # 1. Build and deploy page-test
+  # ============================================================
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+
+    steps:
+
+      # ----------------------------------------------------------
+      # Checkout page-test
+      # ----------------------------------------------------------
+      - name: Checkout page-test branch
+        uses: actions/checkout@v4
+        with:
+          ref: page-test
+          fetch-depth: 0
+
+      # ----------------------------------------------------------
+      # Node
+      # ----------------------------------------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # ----------------------------------------------------------
+      # Install
+      # ----------------------------------------------------------
+      - name: Install dependencies
+        run: npm ci
+
+      # ----------------------------------------------------------
+      # Validate required configuration
+      # ----------------------------------------------------------
+      - name: Validate configuration
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          set -e
+
+          test -n "$DEEPSEEK_API_KEY" \
+            || { echo "ERROR: DEEPSEEK_API_KEY is missing."; exit 1; }
+
+          test -n "$DEEPSEEK_MODEL" \
+            || { echo "ERROR: DEEPSEEK_MODEL is missing."; exit 1; }
+
+          test -n "$DRIVE_CHATBOT_FOLDER_ID" \
+            || { echo "ERROR: DRIVE_CHATBOT_FOLDER_ID is missing."; exit 1; }
+
+          test -n "$DRIVE_MEDIA_FOLDER_ID" \
+            || { echo "ERROR: DRIVE_MEDIA_FOLDER_ID is missing."; exit 1; }
+
+          test -n "$DRIVE_OVERALL_FOLDER_ID" \
+            || { echo "ERROR: DRIVE_OVERALL_FOLDER_ID is missing."; exit 1; }
+
+          test -n "$GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL" \
+            || { echo "ERROR: GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL is missing."; exit 1; }
+
+          test -n "$GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY" \
+            || { echo "ERROR: GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY is missing."; exit 1; }
+
+          echo "Configuration validation passed."
+
+      # ========================================================
+      # 2. Generate static media
+      # ========================================================
+      - name: Generate static media manifest
+        run: |
+          node scripts/generate-static-media-manifest.mjs
+
+      # ========================================================
+      # 3. Get Drive fingerprint
+      # ========================================================
+      - name: Check Drive fingerprint
+        id: drive_fingerprint
+        run: |
+          node scripts/get-drive-fingerprint.mjs
+
+      # ========================================================
+      # 4. Restore chatbot cache
+      # ========================================================
+      - name: Restore DeepSeek knowledge cache
+        id: deepseek_cache
+        uses: actions/cache@v4
+        with:
+          path: client/public/data/deepseek.json
+          key: page-test-deepseek-${{ steps.drive_fingerprint.outputs.hash }}
+
+      # ========================================================
+      # 5. Generate chatbot knowledge
+      # ========================================================
+      - name: Generate chatbot knowledge
+        if: steps.deepseek_cache.outputs.cache-hit != 'true'
+        run: |
+          node scripts/generate-deepseek-data.mjs
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: ${{ env.DEEPSEEK_MODEL }}
+
+          DRIVE_CHATBOT_FOLDER_ID: ${{ env.DRIVE_CHATBOT_FOLDER_ID }}
+          DRIVE_MAX_CONTEXT_CHARS: ${{ env.DRIVE_MAX_CONTEXT_CHARS }}
+
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+
+          DEEPSEEK_DRIVE_MAX_FILES: '120'
+          DEEPSEEK_DRIVE_MAX_DEPTH: '5'
+          DEEPSEEK_KNOWLEDGE_MAX_TOKENS: '12000'
+
+      # ========================================================
+      # 6. Generate Drive media manifest
+      # ========================================================
+      - name: Generate Google Drive media manifest
+        run: |
+          node scripts/generate-drive-media-manifest.mjs
+        env:
+          DRIVE_MEDIA_FOLDER_ID: ${{ env.DRIVE_MEDIA_FOLDER_ID }}
+          DRIVE_OVERALL_FOLDER_ID: ${{ env.DRIVE_OVERALL_FOLDER_ID }}
+          DRIVE_OVERALL_MANIFEST_NAME: ${{ env.DRIVE_OVERALL_MANIFEST_NAME }}
+
+          GOOGLE_DRIVE_PUBLIC_API_KEY: ${{ env.GOOGLE_DRIVE_PUBLIC_API_KEY }}
+
+          GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+
+          PUBLIC_DRIVE_MAX_FILES: '500'
+          PUBLIC_DRIVE_MAX_DEPTH: '6'
+
+      # ========================================================
+      # 7. Generate browser DeepSeek configuration
+      # ========================================================
+      - name: Generate browser DeepSeek configuration
+        run: |
+          node scripts/generate-deepseek-config-secret.mjs
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: ${{ env.DEEPSEEK_MODEL }}
+
+      # ========================================================
+      # 8. WAIT 5 MINUTES
+      #
+      # This intentionally delays the generated-key/data push.
+      # ========================================================
+      - name: Wait 5 minutes before pushing generated data
+        run: |
+          echo "Generated data is ready."
+          echo "Waiting 5 minutes before pushing generated data..."
+          sleep 300
+          echo "5 minute wait complete."
+
+      # ========================================================
+      # 9. Commit generated data back to page-test
+      # ========================================================
+      - name: Commit generated data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            client/public/data/deepseek.json \
+            client/public/data/drive-media.json \
+            client/src/deepseek-config-secret.js
+
+          if git diff --cached --quiet; then
+            echo "No generated data changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore(page-test): update generated portfolio data"
+
+          git push origin HEAD:page-test
+
+      # ========================================================
+      # 10. Verify DeepSeek configuration
+      # ========================================================
+      - name: Verify browser DeepSeek configuration
+        run: |
+          node scripts/verify-deepseek-config.mjs
+
+      # ========================================================
+      # 11. Build client
+      # ========================================================
+      - name: Build public client
+        run: |
+          npm run build:client
+        env:
+          NODE_ENV: production
+
+          VITE_API_BASE_URL: ${{ env.VITE_API_BASE_URL }}
+
+          VITE_BASE_PATH: ${{ env.VITE_BASE_PATH }}
+          VITE_PUBLIC_SITE_URL: ${{ env.VITE_PUBLIC_SITE_URL }}
+
+          VITE_GOOGLE_DRIVE_PUBLIC_API_KEY: ${{ env.GOOGLE_DRIVE_PUBLIC_API_KEY }}
+
+          VITE_GOOGLE_DRIVE_PUBLIC_MEDIA_FOLDER_ID: ${{ env.DRIVE_MEDIA_FOLDER_ID }}
+
+      # ========================================================
+      # 12. Prepare Pages artifact
+      #
+      # The repository Pages root is:
+      #
+      # /Muhammad-Zaki-portfolio/
+      #
+      # Therefore the test application lives at:
+      #
+      # /Muhammad-Zaki-portfolio/test/
+      # ========================================================
+      - name: Prepare GitHub Pages artifact
+        run: |
+          set -e
+
+          rm -rf _site
+
+          mkdir -p _site/test
+
+          cp -R client/dist/. _site/test/
+
+          touch _site/.nojekyll
+
+          # GitHub Pages fallback
+          cp _site/test/index.html _site/test/404.html
+
+          echo "Prepared test deployment:"
+          find _site -maxdepth 3 -type f | head -100
+
+      # ========================================================
+      # 13. Configure Pages
+      # ========================================================
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      # ========================================================
+      # 14. Upload artifact
+      # ========================================================
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      # ========================================================
+      # 15. Deploy
+      # ========================================================
+      - name: Deploy page-test
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      # ========================================================
+      # 16. Print URL
+      # ========================================================
+      - name: Show test URL
+        run: |
+          echo "============================================="
+          echo "PAGE TEST DEPLOYMENT"
+          echo "============================================="
+          echo "https://zulfaqar-studio.github.io/Muhammad-Zaki-portfolio/test/"
+          echo "============================================="
